@@ -2,6 +2,17 @@
 """
 Cookie Extractor for YouTube Sync Service
 Извлекает куки из браузеров для обхода ограничений YouTube
+
+ВАЖНО: Этот инструмент предназначен для ЛОКАЛЬНОГО использования!
+Он НЕ РАБОТАЕТ в Docker контейнерах или на серверах без браузеров.
+
+Workflow для Docker окружения:
+1. Запустите этот скрипт ЛОКАЛЬНО на машине с браузером
+2. Скопируйте результат в config.yaml на сервере
+3. Перезапустите сервис в Docker
+
+Альтернативно используйте yt-dlp напрямую:
+yt-dlp --cookies-from-browser safari --cookies cookies.txt --no-download --simulate https://youtube.com
 """
 
 import argparse
