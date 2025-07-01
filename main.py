@@ -350,42 +350,8 @@ class YouTubeSyncService:
             if "cookie_file" in cookies_config:
                 # Используем файл кук напрямую в yt-dlp
                 file_path = cookies_config["cookie_file"]
-                try:
-                    if os.path.exists(file_path):
-                        cookie_file_path = file_path
-                        self.logger.info(f"Используем файл кук: {file_path}")
-
-                        # Проверяем содержимое файла для диагностики
-                        cookie_pairs = parse_netscape_cookies(file_path)
-                        if cookie_pairs:
-                            important_cookies = [
-                                "LOGIN_INFO",
-                                "SID",
-                                "SAPISID",
-                                "VISITOR_INFO1_LIVE",
-                            ]
-                            found_important = [
-                                name
-                                for name in important_cookies
-                                if any(name in pair for pair in cookie_pairs)
-                            ]
-                            if found_important:
-                                self.logger.info(
-                                    f"Найдены важные YouTube куки в файле: {', '.join(found_important)}"
-                                )
-                            else:
-                                self.logger.warning("Не найдены важные YouTube куки в файле")
-                        else:
-                            self.logger.warning(f"Файл кук {file_path} не содержит YouTube кук")
-                    else:
-                        self.logger.error(f"Файл кук не найден: {file_path}")
-
-                except Exception as e:
-                    self.logger.error(f"Ошибка при чтении файла кук {file_path}: {e}")
-            else:
-                self.logger.warning("Куки включены, но не указан cookie_file")
-        else:
-            self.logger.info("Куки отключены в конфигурации - используется базовая аутентификация")
+                if os.path.exists(file_path):
+                    cookie_file_path = file_path
 
         opts = {
             "format": base_format,
@@ -425,9 +391,9 @@ class YouTubeSyncService:
         # Добавляем куки в опции yt-dlp
         if cookie_file_path:
             opts["cookiefile"] = cookie_file_path
-            self.logger.debug(f"Добавлен cookiefile в опции yt-dlp: {cookie_file_path}")
+            self.logger.debug(f"🎯 Добавлен cookiefile в опции yt-dlp для загрузки: {cookie_file_path}")
         else:
-            self.logger.debug("Куки не настроены, используется базовая аутентификация")
+            self.logger.debug("🎯 Загрузка будет выполнена без кук")
 
         self.logger.info(f"Ограничиваем обработку максимум {max_videos} последними видео")
 
@@ -525,13 +491,32 @@ class YouTubeSyncService:
         self.logger.debug(f"Ожидание {delay:.1f} секунд перед запросом")
         time.sleep(delay)
 
-        # Получаем путь к файлу кук
+        # Получаем и логируем настройки кук
         cookies_config = self.config.get("cookies", {})
         cookie_file_path = None
-        if cookies_config.get("enabled", False) and "cookie_file" in cookies_config:
-            file_path = cookies_config["cookie_file"]
-            if os.path.exists(file_path):
-                cookie_file_path = file_path
+        
+        if cookies_config.get("enabled", False):
+            if "cookie_file" in cookies_config:
+                file_path = cookies_config["cookie_file"]
+                if os.path.exists(file_path):
+                    cookie_file_path = file_path
+                    self.logger.info(f"🍪 Используем файл кук для {url}: {file_path}")
+                    
+                    # Диагностика содержимого файла кук
+                    try:
+                        cookie_pairs = parse_netscape_cookies(file_path)
+                        if cookie_pairs:
+                            self.logger.info(f"🔑 Найдено {len(cookie_pairs)} YouTube кук в файле")
+                        else:
+                            self.logger.warning(f"⚠️ Файл кук {file_path} не содержит YouTube кук")
+                    except Exception as e:
+                        self.logger.error(f"❌ Ошибка при анализе файла кук {file_path}: {e}")
+                else:
+                    self.logger.error(f"❌ Файл кук не найден: {file_path}")
+            else:
+                self.logger.warning("⚠️ Куки включены, но не указан cookie_file")
+        else:
+            self.logger.info("🚫 Куки отключены в конфигурации - используется базовая аутентификация")
 
         max_retries = 3
         for attempt in range(max_retries):
@@ -560,6 +545,9 @@ class YouTubeSyncService:
                     # Добавляем куки в опции для получения метаданных
                     if cookie_file_path:
                         info_opts["cookiefile"] = cookie_file_path
+                        self.logger.debug(f"🔍 Используем куки для получения метаданных видео")
+                    else:
+                        self.logger.debug(f"🔍 Получаем метаданные видео без кук")
 
                     with yt_dlp.YoutubeDL(info_opts) as info_ydl:
                         for entry in entries:
@@ -643,6 +631,11 @@ class YouTubeSyncService:
 
                     if total_videos == 0:
                         self.logger.info("Нет новых видео для загрузки")
+                        # Показываем диагностику кук даже если нет видео для загрузки
+                        if cookie_file_path:
+                            self.logger.info(f"🍪 Куки были использованы для проверки видео с {url}")
+                        else:
+                            self.logger.info(f"🚫 Проверка видео с {url} выполнена без кук")
                         return
 
                     # Загружаем только отфильтрованные видео
