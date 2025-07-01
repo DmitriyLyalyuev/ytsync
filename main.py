@@ -525,6 +525,14 @@ class YouTubeSyncService:
         self.logger.debug(f"Ожидание {delay:.1f} секунд перед запросом")
         time.sleep(delay)
 
+        # Получаем путь к файлу кук
+        cookies_config = self.config.get("cookies", {})
+        cookie_file_path = None
+        if cookies_config.get("enabled", False) and "cookie_file" in cookies_config:
+            file_path = cookies_config["cookie_file"]
+            if os.path.exists(file_path):
+                cookie_file_path = file_path
+
         max_retries = 3
         for attempt in range(max_retries):
             try:
