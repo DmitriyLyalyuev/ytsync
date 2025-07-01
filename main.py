@@ -391,7 +391,9 @@ class YouTubeSyncService:
         # Добавляем куки в опции yt-dlp
         if cookie_file_path:
             opts["cookiefile"] = cookie_file_path
-            self.logger.debug(f"🎯 Добавлен cookiefile в опции yt-dlp для загрузки: {cookie_file_path}")
+            self.logger.debug(
+                f"🎯 Добавлен cookiefile в опции yt-dlp для загрузки: {cookie_file_path}"
+            )
         else:
             self.logger.debug("🎯 Загрузка будет выполнена без кук")
 
@@ -494,14 +496,14 @@ class YouTubeSyncService:
         # Получаем и логируем настройки кук
         cookies_config = self.config.get("cookies", {})
         cookie_file_path = None
-        
+
         if cookies_config.get("enabled", False):
             if "cookie_file" in cookies_config:
                 file_path = cookies_config["cookie_file"]
                 if os.path.exists(file_path):
                     cookie_file_path = file_path
                     self.logger.info(f"🍪 Используем файл кук для {url}: {file_path}")
-                    
+
                     # Диагностика содержимого файла кук
                     try:
                         cookie_pairs = parse_netscape_cookies(file_path)
@@ -516,7 +518,9 @@ class YouTubeSyncService:
             else:
                 self.logger.warning("⚠️ Куки включены, но не указан cookie_file")
         else:
-            self.logger.info("🚫 Куки отключены в конфигурации - используется базовая аутентификация")
+            self.logger.info(
+                "🚫 Куки отключены в конфигурации - используется базовая аутентификация"
+            )
 
         max_retries = 3
         for attempt in range(max_retries):
@@ -633,7 +637,9 @@ class YouTubeSyncService:
                         self.logger.info("Нет новых видео для загрузки")
                         # Показываем диагностику кук даже если нет видео для загрузки
                         if cookie_file_path:
-                            self.logger.info(f"🍪 Куки были использованы для проверки видео с {url}")
+                            self.logger.info(
+                                f"🍪 Куки были использованы для проверки видео с {url}"
+                            )
                         else:
                             self.logger.info(f"🚫 Проверка видео с {url} выполнена без кук")
                         return
