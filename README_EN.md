@@ -139,7 +139,6 @@ cookies:
 ```
 ytsync/
 ├── main.py              # Main service code
-├── extract_cookies.py   # Cookie extraction tool (local use only)
 ├── config.yaml          # Configuration
 ├── requirements.txt     # Python dependencies
 ├── Dockerfile          # Docker image

@@ -549,6 +549,9 @@ class YouTubeSyncService:
 
                     # Создаем экземпляр для получения метаданных отдельных видео
                     info_opts = {"quiet": True, "no_warnings": True}
+                    # Добавляем куки в опции для получения метаданных
+                    if cookie_file_path:
+                        info_opts["cookiefile"] = cookie_file_path
 
                     with yt_dlp.YoutubeDL(info_opts) as info_ydl:
                         for entry in entries:
