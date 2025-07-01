@@ -30,24 +30,13 @@ scheduler:
   first_run_time: "08:00"
 
 # Настройка кук для обхода ограничений YouTube
-# ВНИМАНИЕ: Для Docker окружения извлеките куки ЛОКАЛЬНО и скопируйте в конфиг
+# ВНИМАНИЕ: Для Docker окружения извлеките куки ЛОКАЛЬНО и скопируйте файл на сервер
 cookies:
   enabled: false
   
-  # Способ 1: Файл кук в формате Netscape (рекомендуется для Docker)
+  # Файл кук в формате Netscape
   # cookie_file: "/path/to/cookies.txt"
   # Создайте файл командой: yt-dlp --cookies-from-browser safari --cookies cookies.txt --no-download --simulate https://youtube.com
-  
-  # Способ 2: Готовая строка кук
-  # cookie_string: "VISITOR_INFO1_LIVE=abcd1234; YSC=efgh5678; PREF=f1=50000000"
-  # Получите командой: python3 extract_cookies.py safari (только локально!)
-  
-  # Способ 3: Отдельные куки
-  # manual_cookies:
-  #   VISITOR_INFO1_LIVE: "abcd1234"
-  #   YSC: "efgh5678"
-  #   PREF: "f1=50000000"
-  #   CONSENT: "YES+cb"
 
 logging:
   level: "DEBUG"

@@ -342,88 +342,48 @@ class YouTubeSyncService:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
 
-        # Добавляем куки если они настроены
+        # Обрабатываем куки если они настроены
         cookies_config = self.config.get("cookies", {})
+        cookie_file_path = None
+
         if cookies_config.get("enabled", False):
             if "cookie_file" in cookies_config:
-                # Загружаем куки из файла в формате Netscape
-                cookie_file_path = cookies_config["cookie_file"]
+                # Используем файл кук напрямую в yt-dlp
+                file_path = cookies_config["cookie_file"]
                 try:
-                    cookie_pairs = parse_netscape_cookies(cookie_file_path)
+                    if os.path.exists(file_path):
+                        cookie_file_path = file_path
+                        self.logger.info(f"Используем файл кук: {file_path}")
 
-                    if cookie_pairs:
-                        cookie_string = "; ".join(cookie_pairs)
-                        http_headers["Cookie"] = cookie_string
-                        self.logger.info(
-                            f"Загружены куки из файла {cookie_file_path}: {len(cookie_pairs)} кук"
-                        )
-
-                        # Проверяем наличие важных YouTube кук
-                        important_cookies = ["LOGIN_INFO", "SID", "SAPISID", "VISITOR_INFO1_LIVE"]
-                        found_important = [
-                            name for name in important_cookies if name in cookie_string
-                        ]
-                        if found_important:
-                            self.logger.info(
-                                f"Найдены важные YouTube куки: {', '.join(found_important)}"
-                            )
+                        # Проверяем содержимое файла для диагностики
+                        cookie_pairs = parse_netscape_cookies(file_path)
+                        if cookie_pairs:
+                            important_cookies = [
+                                "LOGIN_INFO",
+                                "SID",
+                                "SAPISID",
+                                "VISITOR_INFO1_LIVE",
+                            ]
+                            found_important = [
+                                name
+                                for name in important_cookies
+                                if any(name in pair for pair in cookie_pairs)
+                            ]
+                            if found_important:
+                                self.logger.info(
+                                    f"Найдены важные YouTube куки в файле: {', '.join(found_important)}"
+                                )
+                            else:
+                                self.logger.warning("Не найдены важные YouTube куки в файле")
                         else:
-                            self.logger.warning("Не найдены важные YouTube куки для аутентификации")
+                            self.logger.warning(f"Файл кук {file_path} не содержит YouTube кук")
                     else:
-                        self.logger.warning(f"Файл кук {cookie_file_path} не содержит YouTube кук")
+                        self.logger.error(f"Файл кук не найден: {file_path}")
 
-                except FileNotFoundError:
-                    self.logger.error(f"Файл кук не найден: {cookie_file_path}")
                 except Exception as e:
-                    self.logger.error(f"Ошибка при чтении файла кук {cookie_file_path}: {e}")
-
-            elif "cookie_string" in cookies_config:
-                # Используем готовую строку кук
-                cookie_string = cookies_config["cookie_string"]
-                http_headers["Cookie"] = cookie_string
-
-                # Debug логирование
-                cookie_count = len(cookie_string.split(";"))
-                cookie_preview = (
-                    cookie_string[:100] + "..." if len(cookie_string) > 100 else cookie_string
-                )
-                self.logger.info(
-                    f"Используем куки из конфигурации (cookie_string): {cookie_count} кук"
-                )
-                self.logger.debug(f"Cookie заголовок: {cookie_preview}")
-
-                # Проверяем наличие важных YouTube кук
-                important_cookies = ["LOGIN_INFO", "SID", "SAPISID", "VISITOR_INFO1_LIVE"]
-                found_important = [name for name in important_cookies if name in cookie_string]
-                if found_important:
-                    self.logger.info(f"Найдены важные YouTube куки: {', '.join(found_important)}")
-                else:
-                    self.logger.warning("Не найдены важные YouTube куки для аутентификации")
-
-            elif "manual_cookies" in cookies_config:
-                # Формируем строку из отдельных кук
-                manual_cookies = cookies_config["manual_cookies"]
-                cookie_pairs = [f"{name}={value}" for name, value in manual_cookies.items()]
-                cookie_string = "; ".join(cookie_pairs)
-                http_headers["Cookie"] = cookie_string
-
-                self.logger.info(
-                    f"Используем куки из конфигурации (manual_cookies): {len(manual_cookies)} кук"
-                )
-                self.logger.debug(f"Куки: {list(manual_cookies.keys())}")
-
-                # Проверяем наличие важных YouTube кук
-                important_cookies = ["LOGIN_INFO", "SID", "SAPISID", "VISITOR_INFO1_LIVE"]
-                found_important = [name for name in important_cookies if name in manual_cookies]
-                if found_important:
-                    self.logger.info(f"Найдены важные YouTube куки: {', '.join(found_important)}")
-                else:
-                    self.logger.warning("Не найдены важные YouTube куки для аутентификации")
-
+                    self.logger.error(f"Ошибка при чтении файла кук {file_path}: {e}")
             else:
-                self.logger.warning(
-                    "Куки включены в конфигурации, но не найдены cookie_string или manual_cookies"
-                )
+                self.logger.warning("Куки включены, но не указан cookie_file")
         else:
             self.logger.info("Куки отключены в конфигурации - используется базовая аутентификация")
 
@@ -451,7 +411,7 @@ class YouTubeSyncService:
                     "add_metadata": True,
                 },
             ],
-            # Настройки для обхода блокировок YouTube с поддержкой кук
+            # Настройки для обхода блокировок YouTube
             "http_headers": http_headers,
             "sleep_interval": 1,  # Минимальная задержка между запросами
             "max_sleep_interval": 5,  # Максимальная задержка
@@ -461,6 +421,13 @@ class YouTubeSyncService:
             "keep_fragments": False,
             "noprogress": False,
         }
+
+        # Добавляем куки в опции yt-dlp
+        if cookie_file_path:
+            opts["cookiefile"] = cookie_file_path
+            self.logger.debug(f"Добавлен cookiefile в опции yt-dlp: {cookie_file_path}")
+        else:
+            self.logger.debug("Куки не настроены, используется базовая аутентификация")
 
         self.logger.info(f"Ограничиваем обработку максимум {max_videos} последними видео")
 

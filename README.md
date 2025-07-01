@@ -173,35 +173,11 @@ cookies:
 yt-dlp --cookies-from-browser safari --cookies cookies.txt --no-download --simulate https://youtube.com
 ```
 
-#### 2. Строка кук
-
-```yaml
-cookies:
-  enabled: true
-  cookie_string: "LOGIN_INFO=...; SID=...; SAPISID=..."
-```
-
-**Получение строки кук:**
-```bash
-# Локально на машине с браузером
-python3 extract_cookies.py safari
-```
-
-#### 3. Отдельные куки
-
-```yaml
-cookies:
-  enabled: true
-  manual_cookies:
-    LOGIN_INFO: "значение"
-    SID: "значение"
-    SAPISID: "значение"
-```
 
 ### Workflow для Docker
 
-1. **Локально:** Извлеките куки одним из способов выше
-2. **На сервере:** Добавьте куки в config.yaml
+1. **Локально:** Извлеките куки в файл используя yt-dlp
+2. **На сервере:** Скопируйте файл кук и укажите путь в config.yaml
 3. **Перезапуск:** Перезапустите Docker контейнер
 
 ### Диагностика кук

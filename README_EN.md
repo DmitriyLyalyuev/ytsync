@@ -173,35 +173,11 @@ cookies:
 yt-dlp --cookies-from-browser safari --cookies cookies.txt --no-download --simulate https://youtube.com
 ```
 
-#### 2. Cookie String
-
-```yaml
-cookies:
-  enabled: true
-  cookie_string: "LOGIN_INFO=...; SID=...; SAPISID=..."
-```
-
-**Getting cookie string:**
-```bash
-# Locally on machine with browser
-python3 extract_cookies.py safari
-```
-
-#### 3. Individual Cookies
-
-```yaml
-cookies:
-  enabled: true
-  manual_cookies:
-    LOGIN_INFO: "value"
-    SID: "value"
-    SAPISID: "value"
-```
 
 ### Docker Workflow
 
-1. **Locally:** Extract cookies using one of the methods above
-2. **On server:** Add cookies to config.yaml
+1. **Locally:** Extract cookies to file using yt-dlp
+2. **On server:** Copy cookie file and specify path in config.yaml
 3. **Restart:** Restart Docker container
 
 ### Cookie Diagnostics
