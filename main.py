@@ -336,9 +336,13 @@ class YouTubeSyncService:
                 manual_cookies = cookies_config["manual_cookies"]
                 cookie_pairs = [f"{name}={value}" for name, value in manual_cookies.items()]
                 http_headers["Cookie"] = "; ".join(cookie_pairs)
-                self.logger.info(f"Используем куки из конфигурации (manual_cookies): {len(manual_cookies)} кук")
+                self.logger.info(
+                    f"Используем куки из конфигурации (manual_cookies): {len(manual_cookies)} кук"
+                )
             else:
-                self.logger.warning("Куки включены в конфигурации, но не найдены cookie_string или manual_cookies")
+                self.logger.warning(
+                    "Куки включены в конфигурации, но не найдены cookie_string или manual_cookies"
+                )
 
         opts = {
             "format": base_format,
