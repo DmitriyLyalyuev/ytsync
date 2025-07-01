@@ -39,7 +39,7 @@ jobs:
         run: |
           black --check *.py
           isort --check-only *.py
-          pylint *.py
+          pylint *.py --fail-under=9.5
 
       - name: Security scan with Bandit
         run: |
