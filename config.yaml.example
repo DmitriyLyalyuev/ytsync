@@ -29,6 +29,21 @@ scheduler:
   sync_interval_hours: 6
   first_run_time: "08:00"
 
+# Настройка кук для обхода ограничений YouTube
+# Используйте скрипт extract_cookies.py для извлечения кук из браузера:
+# python3 extract_cookies.py chrome
+cookies:
+  enabled: false
+  # Способ 1: Готовая строка кук (рекомендуется)
+  # cookie_string: "VISITOR_INFO1_LIVE=abcd1234; YSC=efgh5678; PREF=f1=50000000"
+  
+  # Способ 2: Отдельные куки
+  # manual_cookies:
+  #   VISITOR_INFO1_LIVE: "abcd1234"
+  #   YSC: "efgh5678"
+  #   PREF: "f1=50000000"
+  #   CONSENT: "YES+cb"
+
 logging:
   level: "DEBUG"
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

@@ -319,6 +319,27 @@ class YouTubeSyncService:
             "quality", "bestvideo[height<=1080]+bestaudio/best[height<=720]/best"
         )
 
+        # Базовые HTTP заголовки
+        http_headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+
+        # Добавляем куки если они настроены
+        cookies_config = self.config.get("cookies", {})
+        if cookies_config.get("enabled", False):
+            if "cookie_string" in cookies_config:
+                # Используем готовую строку кук
+                http_headers["Cookie"] = cookies_config["cookie_string"]
+                self.logger.info("Используем куки из конфигурации (cookie_string)")
+            elif "manual_cookies" in cookies_config:
+                # Формируем строку из отдельных кук
+                manual_cookies = cookies_config["manual_cookies"]
+                cookie_pairs = [f"{name}={value}" for name, value in manual_cookies.items()]
+                http_headers["Cookie"] = "; ".join(cookie_pairs)
+                self.logger.info(f"Используем куки из конфигурации (manual_cookies): {len(manual_cookies)} кук")
+            else:
+                self.logger.warning("Куки включены в конфигурации, но не найдены cookie_string или manual_cookies")
+
         opts = {
             "format": base_format,
             "outtmpl": self.get_output_template(output_dir, source_url),
@@ -343,10 +364,8 @@ class YouTubeSyncService:
                     "add_metadata": True,
                 },
             ],
-            # Настройки для обхода блокировок YouTube
-            "http_headers": {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-            },
+            # Настройки для обхода блокировок YouTube с поддержкой кук
+            "http_headers": http_headers,
             "sleep_interval": 1,  # Минимальная задержка между запросами
             "max_sleep_interval": 5,  # Максимальная задержка
             "retries": 3,  # Количество повторов
