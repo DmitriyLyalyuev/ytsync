@@ -37,14 +37,14 @@ jobs:
 
       - name: Run linting
         run: |
-          black --check main.py
-          isort --check-only main.py
-          pylint main.py
+          black --check *.py
+          isort --check-only *.py
+          pylint *.py
 
       - name: Security scan with Bandit
         run: |
           pip install bandit
-          bandit -r main.py -f json -o bandit-report.json || true
+          bandit -r *.py -f json -o bandit-report.json || true
 
       - name: Upload security scan results
         uses: actions/upload-artifact@v4
