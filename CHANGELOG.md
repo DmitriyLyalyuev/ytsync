@@ -14,6 +14,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Notification system (Telegram, Discord, Email)
 - Plugin system for extensibility
 
+## [1.1.0] - 2025-07-02
+
+### Changed
+- **Dependencies Updates**
+  - Updated yt-dlp from 2025.06.09 to 2025.6.25 (security fixes and improvements)
+  - Updated PyYAML from 6.0.1 to 6.0.2 (security update)
+  - Updated requests from 2.31.0 to 2.32.4 (security update)
+
+### Added
+- **Authentication Improvements**
+  - Enhanced cookies support for better authentication handling
+  - Simplified cookie configuration management
+  - Improved metadata fetching with proper authentication
+
+### Fixed
+- **Code Quality & CI/CD**
+  - Fixed formatting issues throughout codebase
+  - Improved logging placement and timing
+  - Fixed Pylint configuration and warnings
+  - Enhanced Trivy security scanning configuration
+  - Fixed workflow issues in GitHub Actions
+
+### Infrastructure
+- **Automated Dependency Management**
+  - Added Dependabot configuration for automatic security updates
+  - Automated dependency vulnerability monitoring
+  - Improved CI/CD pipeline reliability
+
 ## [1.0.0] - 2024-12-26
 
 ### Added
