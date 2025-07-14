@@ -222,7 +222,6 @@ class YouTubeSyncService:
             )
             conn.commit()
 
-
     def get_output_template(self, output_dir=None, source_url=None):
         """Create output filename template"""
         if output_dir is None:
@@ -253,9 +252,7 @@ class YouTubeSyncService:
                         "url": channel,
                         "period_days": default_period,
                         "type": "channel",
-                        "output_dir": self.config["download"][
-                            "output_dir"
-                        ],
+                        "output_dir": self.config["download"]["output_dir"],
                     }
                 )
             elif isinstance(channel, dict):
@@ -278,9 +275,7 @@ class YouTubeSyncService:
                         "url": playlist,
                         "period_days": default_period,
                         "type": "playlist",
-                        "output_dir": self.config["download"][
-                            "output_dir"
-                        ],
+                        "output_dir": self.config["download"]["output_dir"],
                     }
                 )
             elif isinstance(playlist, dict):
@@ -360,9 +355,7 @@ class YouTubeSyncService:
 
         if cookie_file_path:
             opts["cookiefile"] = cookie_file_path
-            self.logger.debug(
-                f"🎯 Cookies added to yt-dlp settings: {cookie_file_path}"
-            )
+            self.logger.debug(f"🎯 Cookies added to yt-dlp settings: {cookie_file_path}")
         else:
             self.logger.debug("🎯 Download will be made without cookies")
 
@@ -463,9 +456,13 @@ class YouTubeSyncService:
                     try:
                         cookie_pairs = parse_netscape_cookies(file_path)
                         if cookie_pairs:
-                            self.logger.info(f"🔑 Found {len(cookie_pairs)} YouTube cookies in file")
+                            self.logger.info(
+                                f"🔑 Found {len(cookie_pairs)} YouTube cookies in file"
+                            )
                         else:
-                            self.logger.warning(f"⚠️ Cookie file {file_path} does not contain YouTube cookies")
+                            self.logger.warning(
+                                f"⚠️ Cookie file {file_path} does not contain YouTube cookies"
+                            )
                     except Exception as e:
                         self.logger.error(f"❌ Error analyzing cookie file {file_path}: {e}")
                 else:
@@ -578,11 +575,11 @@ class YouTubeSyncService:
                     if total_videos == 0:
                         self.logger.info("No new videos to download")
                         if cookie_file_path:
-                            self.logger.info(
-                                f"🍪 Cookies were used for checking videos from {url}"
-                            )
+                            self.logger.info(f"🍪 Cookies were used for checking videos from {url}")
                         else:
-                            self.logger.info(f"🚫 Checking videos from {url} was done without cookies")
+                            self.logger.info(
+                                f"🚫 Checking videos from {url} was done without cookies"
+                            )
                         return
 
                     download_opts = self.get_ydl_opts(period_days, output_dir, url)
@@ -637,7 +634,9 @@ class YouTubeSyncService:
                         self.logger.info(f"Waiting {retry_delay:.1f} seconds before retry")
                         time.sleep(retry_delay)
                     else:
-                        self.logger.error(f"Can't complete synchronization {url} after {max_retries} attempts")
+                        self.logger.error(
+                            f"Can't complete synchronization {url} after {max_retries} attempts"
+                        )
                 else:
                     self.logger.error(f"Error with download {url}: {error_msg}")
                     break
