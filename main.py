@@ -335,7 +335,7 @@ class YouTubeSyncService:
             "postprocessors": [
                 {
                     "key": "FFmpegVideoConvertor",
-                    "preferredformat": "mp4",
+                    "preferedformat": "mp4",
                 },
                 {
                     "key": "FFmpegMetadata",
