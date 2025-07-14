@@ -7,7 +7,6 @@ Automatic synchronization of videos from YouTube channels and playlists
 import logging
 import os
 import random
-import re
 import sqlite3
 import sys
 import time
@@ -446,12 +445,13 @@ class YouTubeSyncService:
         self.logger.debug(f"Wait for {delay:.1f} seconds before request")
         time.sleep(delay)
 
-        # Логируем настройки кук
         cookies_config = self.config.get("cookies", {})
+        cookie_file_path = None
         if cookies_config.get("enabled", False):
             if "cookie_file" in cookies_config:
                 file_path = cookies_config["cookie_file"]
                 if os.path.exists(file_path):
+                    cookie_file_path = file_path
                     self.logger.info(f"🍪 Using cookie file for {url}: {file_path}")
                     try:
                         cookie_pairs = parse_netscape_cookies(file_path)
@@ -493,7 +493,7 @@ class YouTubeSyncService:
 
                     info_opts = self.get_ydl_opts(period_days, output_dir, url)
                     info_opts.update({"quiet": True, "no_warnings": True, "extract_flat": False})
-                    self.logger.debug(f"🔍 Using configured options for obtaining video metadata")
+                    self.logger.debug("🔍 Using configured options for obtaining video metadata")
 
                     with yt_dlp.YoutubeDL(info_opts) as info_ydl:
                         for entry in entries:
