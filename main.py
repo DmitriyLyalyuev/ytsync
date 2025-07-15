@@ -364,9 +364,11 @@ class YouTubeSyncService:
         if max_file_size > 0:
             if "+" in base_format:
                 opts["format"] = base_format.replace(
-                    "bestvideo[height<=1080]", f"bestvideo[height<=1080][filesize<{max_file_size}M]"
+                    "bestvideo[height<=1080]",
+                    f"bestvideo[height<=1080][filesize<{max_file_size}M]",
                 ).replace(
-                    "bestvideo[height<=720]", f"bestvideo[height<=720][filesize<{max_file_size}M]"
+                    "bestvideo[height<=720]",
+                    f"bestvideo[height<=720][filesize<{max_file_size}M]",
                 )
             else:
                 opts["format"] += f"[filesize<{max_file_size}M]"
@@ -607,7 +609,12 @@ class YouTubeSyncService:
                                 self.logger.error(f"✗ Error downloading {video_url}: {error_msg}")
                                 # Mark video as failed
                                 self.mark_video_failed(
-                                    video_id, video_url, video_title, upload_date, url, error_msg
+                                    video_id,
+                                    video_url,
+                                    video_title,
+                                    upload_date,
+                                    url,
+                                    error_msg,
                                 )
                                 self.logger.debug(
                                     f"Video {video_id} marked as failed, will retry on next run"
