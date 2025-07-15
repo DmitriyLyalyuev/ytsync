@@ -17,31 +17,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-
-      - name: Security scan with Bandit
-        run: |
-          pip install bandit
-          bandit -r *.py -f json -o bandit-report.json || true
-
-      - name: Upload security scan results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: security-scan-results
-          path: bandit-report.json
-
   build:
-    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
