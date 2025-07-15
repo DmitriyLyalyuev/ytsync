@@ -456,9 +456,7 @@ class YouTubeSyncService:
                     try:
                         cookie_pairs = parse_netscape_cookies(file_path)
                         if cookie_pairs:
-                            self.logger.info(
-                                f"🔑 Found {len(cookie_pairs)} YouTube cookies in file"
-                            )
+                            self.logger.info(f"🔑 Found {len(cookie_pairs)} YouTube cookies in file")
                         else:
                             self.logger.warning(
                                 f"⚠️ Cookie file {file_path} does not contain YouTube cookies"
