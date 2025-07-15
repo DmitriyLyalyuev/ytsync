@@ -21,7 +21,7 @@ import yt_dlp
 def parse_netscape_cookies(file_path):
     """Parse cookies file"""
     cookie_pairs = []
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(file_path, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if line.startswith("#") or not line:
@@ -50,7 +50,7 @@ class YouTubeSyncService:
     def load_config(self):
         """Load configuration from YAML file"""
         try:
-            with open(self.config_path, "r", encoding="utf-8") as file:
+            with open(self.config_path, encoding="utf-8") as file:
                 self.config = yaml.safe_load(file)
             self.config_last_modified = os.path.getmtime(self.config_path)
         except FileNotFoundError:

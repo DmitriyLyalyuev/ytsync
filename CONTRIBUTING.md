@@ -100,7 +100,7 @@ bandit -r main.py
    ```bash
    # Run the service locally
    python main.py
-   
+
    # Test with Docker
    docker-compose up --build
    ```
@@ -154,7 +154,7 @@ Longer description if needed
    ```bash
    # Test configuration loading
    python main.py --help
-   
+
    # Test with sample config
    python main.py
    ```
