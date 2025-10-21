@@ -1,4 +1,4 @@
-yt-dlp==2025.9.26
+yt-dlp==2025.10.14
 PyYAML==6.0.3
 schedule==1.2.2
 requests==2.32.5
