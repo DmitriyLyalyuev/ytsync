@@ -5,6 +5,7 @@ ARG USER_GID=1000
 
 RUN apt-get update && apt-get install -y \
     ffmpeg \
+    &&  curl -fsSL https://deno.land/install.sh | sh \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

@@ -1,4 +1,5 @@
 yt-dlp==2025.11.12
+yt-dlp-ejs==0.3.1
 PyYAML==6.0.3
 schedule==1.2.2
 requests==2.32.5
