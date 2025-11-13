@@ -14,6 +14,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Notification system (Telegram, Discord, Email)
 - Plugin system for extensibility
 
+## [1.2.0] - 2025-11-13
+
+### Added
+- **Enhanced Video Processing**
+  - Added yt-dlp-ejs (v0.3.1) for improved JavaScript extraction
+  - Added Deno runtime support for better compatibility with modern YouTube features
+  - Improved handling of dynamic content loading
+
+### Changed
+- **Dependencies Updates**
+  - Updated yt-dlp from 2025.6.25 to 2025.11.12 (multiple security fixes and improvements)
+  - Updated PyYAML from 6.0.2 to 6.0.3 (security update)
+  - Updated requests from 2.32.4 to 2.32.5 (security update)
+  - Updated schedule to 1.2.2
+
+### Fixed
+- **Reliability Improvements**
+  - Increased retry attempts for better error recovery
+  - Improved code formatting and quality with pre-commit hooks
+  - Enhanced CI/CD pipeline with Python 3.12 support
+
+### Infrastructure
+- **Development Tools**
+  - Added pre-commit hooks for automated code quality checks
+  - Configured Black, isort, and additional formatters
+  - Daily dependency checks via Dependabot
+  - Upgraded pip in CI/CD pipeline
+
 ## [1.1.0] - 2025-07-02
 
 ### Changed
