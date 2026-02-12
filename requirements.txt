@@ -1,5 +1,5 @@
 yt-dlp==2026.2.4
-yt-dlp-ejs==0.3.2
+yt-dlp-ejs==0.4.0
 PyYAML==6.0.3
 schedule==1.2.2
 requests==2.32.5
